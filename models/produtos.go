@@ -48,3 +48,16 @@ func RetornaProdutos() []Produto {
 
 	return produtos
 }
+
+func CriarNovoProduto(nome string, descricao string, preco float64, quantidade int) {
+	db := db.ConectaComBancoDeDados()
+
+	sqlInsert, err := db.Prepare("Insert into produtos(nome, descricao, preco, quantidade) values($1, $2, $3, $4)")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	sqlInsert.Exec(nome, descricao, preco, quantidade)
+
+	defer db.Close()
+}
