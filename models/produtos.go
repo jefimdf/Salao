@@ -3,7 +3,7 @@ package models
 import "salao/db"
 
 type Produto struct {
-	id         int
+	Id         int
 	Nome       string
 	Descricao  string
 	Preco      float64
@@ -35,7 +35,7 @@ func RetornaProdutos() []Produto {
 			panic(err.Error())
 		}
 
-		p.id = id
+		p.Id = id
 		p.Nome = nome
 		p.Descricao = descricao
 		p.Preco = preco
@@ -60,4 +60,18 @@ func CriarNovoProduto(nome string, descricao string, preco float64, quantidade i
 	sqlInsert.Exec(nome, descricao, preco, quantidade)
 
 	defer db.Close()
+}
+
+func ExcluirProduto(id string) {
+	db := db.ConectaComBancoDeDados()
+
+	sqlDelete, err := db.Prepare("Delete from produtos where id=$1")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	sqlDelete.Exec(id)
+
+	defer db.Close()
+
 }
