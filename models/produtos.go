@@ -1,6 +1,8 @@
 package models
 
-import "salao/db"
+import (
+	"salao/db"
+)
 
 type Produto struct {
 	Id         int
@@ -13,7 +15,7 @@ type Produto struct {
 func RetornaProdutos() []Produto {
 	db := db.ConectaComBancoDeDados()
 
-	sql, err := db.Query("select * from produtos")
+	sql, err := db.Query("select * from produtos order by nome asc")
 
 	if err != nil {
 		panic(err.Error())
@@ -74,4 +76,50 @@ func ExcluirProduto(id string) {
 
 	defer db.Close()
 
+}
+
+func ConsultaProduto(id string) Produto {
+	db := db.ConectaComBancoDeDados()
+
+	sqlQuery, err := db.Query("Select id, nome, descricao, preco, quantidade from produtos where id=$1", id)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	produto := Produto{}
+
+	for sqlQuery.Next() {
+		var id, quantidade int
+		var nome, descricao string
+		var preco float64
+
+		err = sqlQuery.Scan(&id, &nome, &descricao, &preco, &quantidade)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		produto.Id = id
+		produto.Nome = nome
+		produto.Descricao = descricao
+		produto.Preco = preco
+		produto.Quantidade = quantidade
+	}
+
+	defer db.Close()
+
+	return produto
+
+}
+
+func AtualizaProduto(id int, nome string, descricao string, preco float64, quantidade int) {
+	db := db.ConectaComBancoDeDados()
+
+	sqlInsert, err := db.Prepare("Update produtos SET nome=$1, descricao=$2, preco=$3, quantidade=$4 WHERE id=$5")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	sqlInsert.Exec(nome, descricao, preco, quantidade, id)
+
+	defer db.Close()
 }

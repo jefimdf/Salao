@@ -1,17 +1,8 @@
 {{define "Index"}}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/bootstrap/themes/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="/project/css/dashboard.css">
 
-    <script src="/jquery/jquery-2.1.3.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
+{{template "_head"}}
 
-    <title>Salão Nádia</title>
-</head>
+{{template "_menu"}}
 <body>
     <h1>Aqui</h1>
     <table class="table">
@@ -31,7 +22,9 @@
                 <td>{{.Descricao}}</td>
                 <td>{{.Preco}}</td>
                 <td>{{.Quantidade}}</td>
-                <td><button class="btn btn-danger" onclick="onDelete('{{.Id}}')">Deletar</button></td>
+                <td>
+                    <a href="/edit?id={{.Id}}" class="btn btn-primary" >Editar</a>
+                    <button class="btn btn-danger" onclick="onDelete('{{.Id}}')">Deletar</button></td>
             </tr>
             {{end}}
         </tbody>
@@ -47,6 +40,7 @@
             window.location= "/delete?id="+id;
         }
     }
+    
 </script>
 </html>
 {{end}}
